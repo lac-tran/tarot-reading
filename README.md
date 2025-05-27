@@ -230,6 +230,77 @@ Located in `App.css`:
 | The Hierophant | V | Earth | Taurus | Tradition, Conformity, Teaching |
 | The Lovers | VI | Air | Gemini | Love, Choice, Harmony |
 
+## 🏗️ **Application Architecture**
+
+### **Frontend-Only Design**
+
+This tarot reading app is built as a **pure frontend application** with no backend server required. Here's why this architecture works perfectly for the current features:
+
+#### **Client-Side Processing**
+- **All tarot card data** is stored as JavaScript objects in the React app
+- **Card drawing logic** runs entirely in the browser using `Math.random()`
+- **Time-based guidance** calculated using JavaScript `Date` objects
+- **No API calls** or server communication needed
+- **Instant performance** - no network delays for card readings
+
+#### **Data Storage Strategy**
+```javascript
+// All card data stored directly in App.js
+const tarotCards = [
+  {
+    id: 0,
+    name: "The Fool",
+    dailyGuidance: { morning: "...", energy: "...", evening: "..." },
+    astrology: "Uranus",
+    element: "Air",
+    // ... complete card definition
+  }
+  // ... 6 more cards
+];
+```
+
+#### **Why Frontend-Only Works**
+✅ **Fast Performance** - No server requests needed  
+✅ **Simple Deployment** - Just static files  
+✅ **Offline Capable** - Works without internet (after initial load)  
+✅ **Cost Effective** - No server hosting costs  
+✅ **Highly Available** - No server downtime issues
+
+### **Frontend Architecture Details**
+
+#### **React Component Structure**
+```
+TarotApp (Main Component)
+├── Header Section
+│   ├── Title & Branding
+│   └── Current Date Display
+├── Card Interface
+│   ├── Draw Button (when no card selected)
+│   └── Instructions Panel
+└── Reading Display (when card selected)
+    ├── Card Image & Animation
+    ├── Three-Column Layout
+    │   ├── Card Meaning
+    │   ├── Daily Guidance  
+    │   └── Astrology Info
+    └── Action Buttons
+```
+
+#### **State Management**
+```javascript
+// All state managed with React hooks
+const [selectedCard, setSelectedCard] = useState(null);    // Currently drawn card
+const [isDrawing, setIsDrawing] = useState(false);         // Animation state
+const [showReading, setShowReading] = useState(false);     // Display state
+const [currentTime, setCurrentTime] = useState(new Date()); // Time tracking
+```
+
+#### **Core Functions**
+- **`drawCard()`** - Handles card selection with 2-second animation
+- **`getTimeOfDay()`** - Determines morning/daytime/evening for guidance
+- **`getCurrentGuidance()`** - Returns time-appropriate card advice
+- **`formatTime()`** - Displays current date in readable format
+
 ## 🛠️ Technical Details
 
 ### Dependencies
@@ -250,13 +321,48 @@ Key packages used in the project:
 
 The app uses environment variables for configuration:
 
-- `REACT_APP_BACKEND_URL` - Backend API URL (if needed for future features)
+- `REACT_APP_BACKEND_URL` - Available for future backend features (currently unused)
 
 ### Build Process
 
 1. **Development**: `yarn start` (handled by supervisorctl)
 2. **Production**: `yarn build`
 3. **Testing**: `yarn test`
+
+## 🔄 **Future Backend Considerations**
+
+While the app currently works perfectly without a backend, here are features that would require server-side functionality:
+
+### **Potential Backend Features**
+- **📚 Reading History** - Store past readings for users
+- **👤 User Accounts** - Personal profiles and preferences  
+- **📊 Analytics** - Track popular cards and reading patterns
+- **🔗 Social Sharing** - Share readings with friends
+- **🗄️ Extended Card Database** - Dynamic card content management
+- **🤖 AI-Enhanced Readings** - LLM-powered interpretations
+- **📱 Push Notifications** - Daily card reminders
+- **🌙 Astronomical Data** - Real-time moon phases and planetary positions
+
+### **Backend Architecture (If Added)**
+```
+Frontend (React)  ←→  Backend API  ←→  Database
+     │                     │              │
+     ├── UI Components     ├── Express.js  ├── User Data
+     ├── State Management  ├── REST APIs   ├── Readings History
+     └── HTTP Requests     └── Business    └── Card Content
+                              Logic
+```
+
+### **Current vs. Future Architecture**
+
+| Feature | Current (Frontend-Only) | With Backend |
+|---------|------------------------|--------------|
+| Card Drawing | ✅ Instant | ✅ Instant |
+| Daily Guidance | ✅ Time-based | ✅ Enhanced with user history |
+| Reading Storage | ❌ Session only | ✅ Permanent storage |
+| User Accounts | ❌ Not available | ✅ Full profiles |
+| Social Features | ❌ Print only | ✅ Sharing & community |
+| Offline Use | ✅ After initial load | ❌ Requires connection |
 
 ## 📱 Responsive Design
 
